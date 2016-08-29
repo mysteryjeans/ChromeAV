@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "HTTP transport";
+}
+<div>
+    <div  style="float:left">
+        <ul style="list-style-type: none">
+            <li><span>
+                <input id="cb-httpTransport" type="checkbox" checked />
+                Load as Chunked </span></li>
+            <li id="current-time"></li>
+            <li id="buffered-time"></li>
+            <li id="progress"></li>
+            <li>
+                <input type="button" value="Load" onclick="javascript:loadVideo();" />
+            </li>
+        </ul>
+    </div>
+    <video id="vd-video" preload="none" controls  style="float:right">
+    </video>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        var asChunkedUrl = '@Url.Action("GetStream", "Home", new { sendAsChunked = true, burstCache = Guid.NewGuid() })';
+        var asContentUrl = '@Url.Action("GetStream", "Home", new { sendAsChunked = false, burstCache = Guid.NewGuid() })';
+        var video = document.getElementById('vd-video');
+        var videoDuration = 33;
+
+        function loadVideo() {
+
+            if ($('#cb-httpTransport').is(':checked'))
+                video.src = asChunkedUrl;
+            else
+                video.src = asContentUrl;
+
+            video.load();
+            video.play();
+        }
+
+        setInterval(function () {
+            $('#current-time').html('Current Time: <b>' + video.currentTime + '</b>');
+            if (video && video.buffered.length) {
+                $('#buffered-time').html('Buffered Time: <b>' + video.buffered.end(0) + '</b>');
+                $('#progress').html('Progress: <b>' + parseInt(video.buffered.end(0) / videoDuration * 100) + "%</b>");
+            }
+            else {
+                $('#buffered-time').html('Buffered Time: <b>0</b>');
+                $('#progress').html('Progress: <b>0%</b>');
+            }
+
+        }, 300);
+    </script>
+}

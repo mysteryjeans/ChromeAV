@@ -1,0 +1,13 @@
+debug
+bin
+obj
+Cache
+*.user
+*.suo
+*.Publish.xml
+*.sdf
+*.opensdf
+Thumbs.db
+Log
+.vscode
+.vs
